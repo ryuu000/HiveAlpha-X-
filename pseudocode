@@ -1,0 +1,172 @@
+Here is a pseudocode for creating a forked version of android supporting Hive blockchain by default:
+
+// Step 1: Fork the Android source code from GitHub
+fork https://github.com/android to https://github.com/my-android-fork
+
+// Step 2: Add the Hive libraries and dependencies to the forked code
+add https://github.com/hive/hive-js to my-android-fork/app/src/main/java/com/example/hive
+add https://github.com/stoodkev/hive-keychain to my-android-fork/app/src/main/java/com/example/keychain
+add https://github.com/ledgerconnect/hivesigner.js to my-android-fork/app/src/main/java/com/example/hivesigner
+
+// Step 3: Modify the Android manifest file to include Hive permissions and features
+edit my-android-fork/app/src/main/AndroidManifest.xml
+add <uses-permission android:name="android.permission.INTERNET" />
+add <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+add <uses-feature android:name="android.hardware.camera" />
+add <uses-feature android:name="android.hardware.camera.autofocus" />
+
+// Step 4: Create a Hive service class to handle Hive operations and transactions
+create my-android-fork/app/src/main/java/com/example/hive/HiveService.java
+import com.example.hive.Hive;
+import com.example.keychain.Keychain;
+import com.example.hivesigner.Hivesigner;
+
+class HiveService {
+  // Declare Hive, Keychain and Hivesigner objects
+  private Hive hive;
+  private Keychain keychain;
+  private Hivesigner hivesigner;
+
+  // Constructor method
+  public HiveService() {
+    // Initialize Hive, Keychain and Hivesigner objects
+    hive = new Hive();
+    keychain = new Keychain();
+    hivesigner = new Hivesigner();
+  }
+
+  // Method to check if the user is logged in to Hive
+  public boolean isLoggedIn() {
+    // Return true if the user has a valid Hive account name and private key stored in Keychain or Hivesigner, false otherwise
+    return keychain.hasAccount() || hivesigner.hasAccount();
+  }
+
+  // Method to log in to Hive using Keychain or Hivesigner
+  public void login(String accountName, String privateKey) {
+    // Check if the account name and private key are valid
+    if (hive.isValidAccount(accountName) && hive.isValidKey(privateKey)) {
+      // Store the account name and private key in Keychain or Hivesigner
+      if (keychain.isAvailable()) {
+        keychain.setAccount(accountName, privateKey);
+      } else {
+        hivesigner.setAccount(accountName, privateKey);
+      }
+    } else {
+      // Throw an exception if the account name or private key are invalid
+      throw new IllegalArgumentException("Invalid account name or private key");
+    }
+  }
+
+  // Method to log out from Hive using Keychain or Hivesigner
+  public void logout() {
+    // Clear the account name and private key from Keychain or Hivesigner
+    if (keychain.isAvailable()) {
+      keychain.clearAccount();
+    } else {
+      hivesigner.clearAccount();
+    }
+  }
+
+  // Method to broadcast a transaction to the Hive blockchain using Keychain or Hivesigner
+  public void broadcast(String operation, Object[] params) {
+    // Check if the user is logged in to Hive
+    if (isLoggedIn()) {
+      // Create a transaction object with the operation and parameters
+      Transaction tx = new Transaction(operation, params);
+      // Sign the transaction with the user's private key using Keychain or Hivesigner
+      if (keychain.isAvailable()) {
+        tx.sign(keychain.getPrivateKey());
+      } else {
+        tx.sign(hivesigner.getPrivateKey());
+      }
+      // Broadcast the transaction to the Hive blockchain using Hive API
+      hive.broadcast(tx);
+    } else {
+      // Throw an exception if the user is not logged in to Hive
+      throw new IllegalStateException("User is not logged in to Hive");
+    }
+  }
+
+  // Method to get data from the Hive blockchain using Hive API
+  public Object getData(String method, Object[] params) {
+    // Call the Hive API method with the parameters and return the result
+    return hive.call(method, params);
+  }
+}
+
+// Step 5: Create a Hive activity class to display a user interface for interacting with Hive
+create my-android-fork/app/src/main/java/com/example/hive/HiveActivity.java
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+class HiveActivity extends Activity {
+  // Declare UI elements and Hive service object
+  private EditText accountEditText;
+  private EditText keyEditText;
+  private Button loginButton;
+  private Button logoutButton;
+  private TextView statusTextView;
+  private EditText operationEditText;
+  private EditText paramsEditText;
+  private Button broadcastButton;
+  private TextView resultTextView;
+  private HiveService hiveService;
+
+  // Override the onCreate method
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    // Call the super method
+    super.onCreate(savedInstanceState);
+    // Set the layout from the XML file
+    setContentView(R.layout.activity_hive);
+
+
+Creating an app on this android version:
+
+Here is a pseudocode for creating apps on the forked version of android:
+
+// Step 1: Create a new Android project in Android Studio
+create a new project in Android Studio with the name, package name, and minimum SDK level of your choice
+
+// Step 2: Add the Hive service class to the project
+copy the HiveService.java file from my-android-fork/app/src/main/java/com/example/hive to your project's app/src/main/java/com/example/hive folder
+
+// Step 3: Add the Hive activity class to the project
+copy the HiveActivity.java file from my-android-fork/app/src/main/java/com/example/hive to your project's app/src/main/java/com/example/hive folder
+
+// Step 4: Add the Hive layout file to the project
+copy the activity_hive.xml file from my-android-fork/app/src/main/res/layout to your project's app/src/main/res/layout folder
+
+// Step 5: Modify the Android manifest file to include Hive permissions and features
+edit your project's app/src/main/AndroidManifest.xml file
+add <uses-permission android:name="android.permission.INTERNET" />
+add <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+add <uses-feature android:name="android.hardware.camera" />
+add <uses-feature android:name="android.hardware.camera.autofocus" />
+
+// Step 6: Modify the main activity class to launch the Hive activity
+edit your project's app/src/main/java/com/example/myapp/MainActivity.java file
+import android.content.Intent;
+import com.example.hive.HiveActivity;
+
+class MainActivity extends Activity {
+  // Override the onCreate method
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    // Call the super method
+    super.onCreate(savedInstanceState);
+    // Set the layout from the XML file
+    setContentView(R.layout.activity_main);
+    // Create an intent to start the Hive activity
+    Intent intent = new Intent(this, HiveActivity.class);
+    // Start the Hive activity
+    startActivity(intent);
+  }
+}
+
+// Step 7: Build and run the app on an emulator or a device
+build and run your project on an emulator or a device that supports your forked version of android.
